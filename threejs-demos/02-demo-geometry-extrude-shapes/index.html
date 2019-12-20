@@ -21,7 +21,7 @@
 		<script type="module">
 			import * as THREE from './three.module.js';
 
-			var camera, scene, renderer, controls,mesh1;
+			var camera, scene, renderer, controls,mesh1,star;
 
 			init();
 			run();
@@ -30,6 +30,8 @@
 				requestAnimationFrame(function(){run();});
 				renderer.render(scene,camera);
 				mesh1.rotation.x+=1*Math.PI/180;
+				star.rotation.x-=Math.PI/180;
+				star.rotation.z-=Math.PI/180;
 				//animate();
 			}
 
@@ -52,10 +54,10 @@
 				scene.add( light );
 
 				var closedSpline = new THREE.CatmullRomCurve3( [
-					new THREE.Vector3( - 60, - 60, 60 ),
-					new THREE.Vector3( - 60, 60, 60 ),
-					new THREE.Vector3( 60, 60, 60 ),
-					new THREE.Vector3( 60, -60, 60 ),
+					new THREE.Vector3( - 60, - 60, 0 ),
+					new THREE.Vector3( - 60, 60, 0 ),
+					new THREE.Vector3( 60, 60, 0 ),
+					new THREE.Vector3( 60, -60, 0 ),
 					//new THREE.Vector3( 60, - 100, - 60 )
 				] );
 
@@ -64,7 +66,7 @@
 
 				var extrudeSettings = {
 					steps: 100,
-					bevelEnabled: false,
+					bevelEnabled: true,
 					extrudePath: closedSpline
 				};
 
@@ -90,6 +92,30 @@
 				mesh1 = new THREE.Mesh( geometry, material );
 
 				scene.add( mesh1 ); 
+
+				//
+
+				var pts=[],numPts=5;
+				for(var i=0;i<numPts*2;i++){
+					var r=i%2==0?10:20;
+					let angle=Math.PI*i/numPts;
+					pts.push(new THREE.Vector2(Math.cos(angle)*r,Math.sin(angle)*r));
+				}
+				var shape=new THREE.Shape(pts);
+				var extrudeSettings = {
+					depth: 10,
+					steps: 1,
+					bevelEnabled: true,
+					bevelThickness: 1,
+					bevelSize: 1,
+					bevelSegments: 1
+				};
+				var geometry = new THREE.ExtrudeBufferGeometry( shape, extrudeSettings );
+				var material2= new THREE.MeshLambertMaterial( { color: 0xff8000, wireframe: false } );//创建漫反射材质
+				var materials=[material,material2];
+
+				star = new THREE.Mesh( geometry, materials );
+				scene.add(star);
 				
 			}
 
