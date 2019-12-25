@@ -94,7 +94,7 @@ function MyCircleBufferGeometry( radius, segments, thetaStart, thetaLength ) {
 
 		// normal
 
-		normals.push( 0, 0, 1 );
+		normals.push( 0, 0, 1);
 
 		// uvs
 
